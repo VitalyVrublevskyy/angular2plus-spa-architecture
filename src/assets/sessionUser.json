@@ -1,0 +1,6 @@
+{
+  "user": {
+    "role": "admin",
+    "permission": ["create_item", "view_item", "update_update"]
+  }
+}

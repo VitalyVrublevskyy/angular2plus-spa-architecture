@@ -1,0 +1,59 @@
+<section class="todoapp">
+  <header class="header">
+    <h1>todos</h1>
+
+    <input *ngIf="authService.userRole == Role.Admin"
+           [(ngModel)]="newTodoText"
+           (keyup.enter)="add(newTodoText); newTodoText = null;"
+           class="new-todo"
+           placeholder="What needs to be done?"
+           autofocus="">
+  </header>
+
+  <section *ngIf="items?.length > 0" class="main" >
+    <ul class="todo-list">
+
+      <li *ngFor="let todo of items"
+          [class.completed]="todo.completed"
+          [class.editing]="todo.editing">
+        <div class="view">
+          <input (click)="toggleCompletion(todo)"
+                 [checked]="todo.completed"
+                 class="toggle"
+                 type="checkbox" >
+          <label (dblclick)="todo.editing = true">
+            {{ todo.title }}
+          </label>
+          <button *ngIf="authService.userRole == Role.Admin" (click)="removeItem(todo)" class="destroy" ></button>
+        </div>
+
+        <input *ngIf="todo.editing"
+               [value]="todo.title"
+               #editedtodo
+               (blur)="stopEditing(todo, editedtodo.value)"
+               (keyup.enter)="updateEditingTodo(todo, editedtodo.value)"
+               (keyup.escape)="todo.editing = false"
+               class="edit">
+      </li>
+
+    </ul>
+  </section>
+
+  <footer class="footer" *ngIf="items?.length > 0">
+    <span class="todo-count">
+      <strong>{{ remainingCount }}</strong> {{ remainingCount == 1 ? 'item' : 'items'}} left
+    </span>
+    <ul class="filters">
+      <li><a (click)="mode = Mode.All">All</a></li>
+      <li><a (click)="mode = Mode.Active" class="active" >Active</a></li>
+      <li><a (click)="mode = Mode.Completed" class="completed"   class="selected">Completed</a></li>
+    </ul>
+    <button class="clear-completed" *ngIf="completedCount > 0" (click)="removeCompleted()">Clear completed</button>
+  </footer>
+</section>
+
+
+<div (click)="logout()" class="action">
+  <i class="fa fa-sign-out fa-3x" aria-hidden="true"> </i>
+  <p>Signout</p>
+</div>
